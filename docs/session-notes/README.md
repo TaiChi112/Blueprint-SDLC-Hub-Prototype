@@ -46,6 +46,7 @@ Examples:
 | 2026-03-01 | Completion Handshake + Auto-Save Policy | Agent | [2026-03-01-completion-handshake-auto-save-policy.md](2026-03-01-completion-handshake-auto-save-policy.md) |
 | 2026-03-02 | MCP Integration Analysis & Roadmap | Planning | [2026-03-02-mcp-integration-analysis.md](2026-03-02-mcp-integration-analysis.md) |
 | 2026-03-02 | Stakeholder Benefits Analysis | Analysis | [2026-03-02-stakeholder-benefits-analysis.md](2026-03-02-stakeholder-benefits-analysis.md) |
+| 2026-03-02 | Developer Experience & MCP Project Board | Implementation | [2026-03-02-developer-experience-mcp-board.md](2026-03-02-developer-experience-mcp-board.md) |
 
 ---
 
