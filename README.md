@@ -134,6 +134,7 @@ cd frontend && bun run dev
 | [docs/BACKEND_SETUP.md](docs/BACKEND_SETUP.md) | Python FastAPI setup |
 | [docs/TypeScript_conventions.md](docs/TypeScript_conventions.md) | Frontend code style |
 | [docs/Python_conventions.md](docs/Python_conventions.md) | Backend code style |
+| [docs/TESTING_STRATEGY.md](docs/TESTING_STRATEGY.md) | Testing plan & quality assurance strategy (SDLC Standard) |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
 | [SECURITY.md](SECURITY.md) | Security & deployment checklist |
 
