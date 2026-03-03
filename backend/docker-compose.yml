@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cos2210_postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-specuser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-specpassword123}
+      POSTGRES_DB: ${DB_NAME:-auto_spec_db}
+      TZ: UTC
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-specuser} -d ${DB_NAME:-auto_spec_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cos2210_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: cos2210_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - cos2210_network
+
+volumes:
+  postgres_data:
+
+networks:
+  cos2210_network:
+    driver: bridge
