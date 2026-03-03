@@ -1,0 +1,9 @@
+{
+  "project_name": "PostgreSQL Test Project",
+  "problem_statement": "Testing database integration",
+  "solution_overview": "Verify data saves to both JSON and PostgreSQL",
+  "authorId": "test-user-db",
+  "isPublished": true,
+  "_saved_at": "2026-03-02T15:23:19.609510",
+  "_filename": "spec_2026-03-02-15-23-19-609345.json"
+}

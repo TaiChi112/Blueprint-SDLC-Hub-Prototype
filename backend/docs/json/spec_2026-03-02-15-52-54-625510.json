@@ -1,0 +1,19 @@
+{
+  "project_name": "Auth System v2",
+  "problem_statement": "Need secure auth",
+  "solution_overview": "Build email-based auth",
+  "functional_requirements": [
+    "User registration",
+    "Email verification"
+  ],
+  "non_functional_requirements": [
+    "Load time < 2s"
+  ],
+  "tech_stack_recommendation": [
+    "NextAuth",
+    "PostgreSQL"
+  ],
+  "isPublished": true,
+  "_saved_at": "2026-03-02T15:52:54.625586",
+  "_filename": "spec_2026-03-02-15-52-54-625510.json"
+}
