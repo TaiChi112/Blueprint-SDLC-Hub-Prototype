@@ -5,7 +5,7 @@
   - `frontend/` = Next.js App Router + TypeScript + Tailwind
   - `backend/` = Python FastAPI (LLM generation + integrations)
   - `docs/` = roadmap, setup, session notes
-- Current frontend runs on `localhost:3001`
+- Current frontend runs on `localhost:3000`
 - Backend API runs on `localhost:8000`
 - Database: PostgreSQL (via Prisma on frontend side)
 
@@ -23,17 +23,14 @@
   - NextAuth OAuth (Google/GitHub), not mocked login
 
 ## 3) Coding conventions
+- **STRICT TYPESCRIPT: NO `any` types allowed** - define proper interfaces or use type guards instead
+  - ❌ Bad: `const x = data as any`
+  - ✅ Good: Define `interface MyData { ... }` and use `const x = data as MyData`
+  - ✅ Good: Use type guards: `(data): data is MyType => { return ... }`
 - Prefer minimal, safe edits. Do not refactor unrelated files.
 - Keep UI consistent with existing navbar/theme choices.
-- Use strict TypeScript-safe changes and avoid `any` unless necessary.
 - For Next.js images, always define width/height and keep host whitelist in config.
 - Keep API contracts backward-compatible unless explicitly requested.
-
-## 4) Backend/Frontend boundaries
-- `backend/` is responsible for LLM generation/integration logic.
-- `frontend/` API routes are responsible for app persistence and auth-aware operations.
-- Do not duplicate business logic across layers without reason.
-- Do not remove existing Python backup at:
   - `/d/RepositoryVS/Python/COS2210` (backup must remain intact)
 
 ## 5) Documentation and memory policy (important)
