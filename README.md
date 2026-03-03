@@ -5,7 +5,7 @@
 ![Backend Tests](https://img.shields.io/badge/backend%20tests-20/20%20passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
 
-อังคต system สำหรับจัดการ **Software Requirements** และ **Architecture Artifacts** ด้วย AI  
+อนาคต system สำหรับจัดการ **Software Requirements** และ **Architecture Artifacts** ด้วย AI  
 **Production-ready monorepo**: Next.js + FastAPI + TypeScript + Python + PostgreSQL
 
 - 🎯 Centralized platform for design specifications and requirement engineering
