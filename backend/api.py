@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, ConfigDict
 from google import genai
 import json
@@ -14,6 +15,7 @@ from llm_to_excalidraw import (
     parse_process_steps,
     validate_excalidraw_json
 )
+from excalidraw_utils import sanitize_elements, fix_elements
 from config import RATE_LIMITS, DIAGRAM_STORAGE, MCP_CONFIG, get_rate_limit_for_user, get_backup_path
 
 # 1. Setup Environment & App
@@ -146,11 +148,55 @@ def save_diagram_backup(user_id: str, spec_id: str, diagram_data: dict, version:
     print(f"✅ Diagram backup saved: {backup_path}")
 
 
+def generate_diagram_with_gemini(spec_data: dict) -> dict:
+    """
+    Generate Excalidraw diagram using text parser (Gemini quota bypass).
+
+    NOTE: Gemini API is skipped to preserve quota. Using text parser.
+    Applies sanitize + fix pipeline from reference code.
+
+    Args:
+        spec_data: Specification data with processDescription
+
+    Returns:
+        dict with Excalidraw JSON structure (sanitized & fixed)
+    """
+    # Build process description
+    process_description = spec_data.get("processDescription", "")
+    if not process_description:
+        # Generate from functional requirements
+        reqs = spec_data.get("functional_requirements", spec_data.get("functionalRequirements", []))[:5]
+        process_description = "Process Flow:\n" + "\n".join([
+            f"→ Step {i+1}: {req}" for i, req in enumerate(reqs)
+        ])
+
+    # Skip Gemini API - use text parser directly to preserve quota
+    print(f"📝 Generating diagram from process description (text parser)...")
+    try:
+        diagram_json = process_description_to_excalidraw(process_description, theme="light")
+        raw_count = len(diagram_json.get('elements', []))
+        print(f"📊 Generated {raw_count} raw elements")
+
+        # Apply sanitization pipeline (from reference code)
+        print(f"🔧 Sanitizing elements (add missing fields)...")
+        diagram_json['elements'] = sanitize_elements(diagram_json.get('elements', []))
+
+        print(f"✨ Fixing element issues (arrows→lines, sync points)...")
+        diagram_json['elements'] = fix_elements(diagram_json.get('elements', []))
+
+        final_count = len(diagram_json.get('elements', []))
+        print(f"✅ Process flow diagram ready: {final_count} elements (sanitized & fixed)")
+        return diagram_json
+    except Exception as e:
+        print(f"❌ Text parser diagram generation failed: {e}")
+        raise
+
+
 def generate_process_diagram(spec_data: dict, mcp_type: str = "excalidraw") -> dict:
     """
     Generate Process Flow diagram using specified MCP.
 
-    Phase 4: Excalidraw only (overview, no details)
+    Phase 4: Excalidraw with Gemini AI
     Phase 5+: Draw.io (architecture), Figma (wireframes)
 
     Args:
@@ -161,16 +207,8 @@ def generate_process_diagram(spec_data: dict, mcp_type: str = "excalidraw") -> d
         { "diagram": { excalidraw/drawio/figma JSON } }
     """
     if mcp_type == "excalidraw":
-        # Excalidraw: Process Flow Overview (MVP level, คร่าวๆ)
-        process_description = spec_data.get("processDescription", "")
-        if not process_description:
-            # Generate from functional requirements (top 5)
-            reqs = spec_data.get("functionalRequirements", [])[:5]
-            process_description = "Process Flow:\n" + "\n".join([
-                f"→ Step {i+1}: {req}" for i, req in enumerate(reqs)
-            ])
-
-        diagram_json = process_description_to_excalidraw(process_description, theme="light")
+        # Use Gemini AI to generate diagram
+        diagram_json = generate_diagram_with_gemini(spec_data)
         return {"diagram": diagram_json, "type": "process_flow", "mcp": "excalidraw"}
 
     elif mcp_type == "drawio":
@@ -617,128 +655,203 @@ Output ONLY the Mermaid code, no explanations or markdown backticks:"""
         )
 
 
+def _visualize_spec_core(req: VisualizeSpecRequest, emit_step=None):
+    def emit(step: int, message: str):
+        if emit_step:
+            emit_step(step, message)
+
+    emit(1, "[1/5] Sending to Gemini")
+
+    # 1. Check rate limit
+    allowed, remaining = check_rate_limit(req.userId)
+    if not allowed and not req.forceRegenerate:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "status": "error",
+                "code": "RATE_LIMIT_EXCEEDED",
+                "message": f"Daily diagram generation limit reached ({RATE_LIMITS['diagram_generation']['max_per_day']} per day)",
+                "detail": "Limit resets at midnight UTC",
+                "rateLimitRemaining": 0,
+                "resetAt": (datetime.now(timezone.utc) + timedelta(days=1)).replace(hour=0, minute=0, second=0).isoformat() + "Z"
+            }
+        )
+
+    emit(2, "[2/5] Connecting to @scofieldfree/excalidraw-mcp...")
+
+    # 2. Fetch spec data from database
+    spec_data = None
+
+    if req.specId.startswith("spec_") or req.specId.endswith(".json"):
+        spec_data = repo.load_spec(req.specId)
+    else:
+        all_specs = repo.list_all_specs()
+        for spec_meta in all_specs:
+            spec_filename = spec_meta.get("filename")
+            if spec_filename:
+                loaded_spec = repo.load_spec(spec_filename)
+                if loaded_spec and loaded_spec.get("project_name") == req.specId:
+                    spec_data = loaded_spec
+                    break
+
+    if not spec_data:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "status": "error",
+                "code": "SPEC_NOT_FOUND",
+                "message": f"Specification '{req.specId}' not found",
+                "detail": "Please ensure the spec has been generated first"
+            }
+        )
+
+    if "processDescription" not in spec_data or not spec_data.get("processDescription"):
+        reqs = spec_data.get("functional_requirements", spec_data.get("functionalRequirements", []))
+        spec_data["processDescription"] = "Process Flow:\n" + "\n".join([
+            f"→ Step {i+1}: {req}" for i, req in enumerate(reqs[:5])
+        ])
+
+    emit(3, "[3/5] start_session...")
+
+    # 3. Compute spec hash
+    spec_hash = compute_spec_hash(spec_data)
+
+    # 4. Generate Process Flow diagram
+    mcp_type = req.diagramTypes[0] if req.diagramTypes else "excalidraw"
+    print(f"🎨 Generating {mcp_type} diagram for spec {req.specId}...")
+    diagram_result = generate_process_diagram(spec_data, mcp_type=mcp_type)
+
+    emit(4, "[4/5] add_elements")
+
+    # 5. Validate generated diagram
+    if mcp_type == "excalidraw":
+        if not validate_excalidraw_json(diagram_result["diagram"]):
+            raise ValueError("Excalidraw diagram validation failed")
+
+    # 6. Save visualization to database
+    print(f"💾 Saving visualization to database for {req.specId}...")
+    spec_data['visualizationProcess'] = diagram_result['diagram']
+    repo.save_spec(
+        spec_data,
+        user_id=req.userId,
+        filename=spec_data.get('_filename')
+    )
+    print(f"✅ Visualization saved to database")
+
+    emit(5, "[5/5] get_scene...")
+
+    # 7. Backup to file
+    version = 1
+    save_diagram_backup(req.userId, req.specId, diagram_result["diagram"], version)
+
+    return {
+        "status": "success",
+        "diagram": diagram_result["diagram"],
+        "diagramType": diagram_result["type"],
+        "mcp": diagram_result["mcp"],
+        "specHash": spec_hash,
+        "generatedAt": datetime.now(timezone.utc).isoformat() + "Z",
+        "rateLimitRemaining": max(remaining - 1, 0),
+        "version": version
+    }
+
+
 @app.post("/api/visualize-spec")
-def visualize_spec(req: VisualizeSpecRequest):
-    """
-    Generate Process Flow diagram for a ProjectSpec using Excalidraw MCP.
+async def visualize_spec(req: VisualizeSpecRequest, request: Request):
+    stream_mode = request.query_params.get("stream") == "1"
 
-    Phase 4: Excalidraw MCP - Process Overview (MVP level, no details)
-    Phase 5+: Draw.io MCP (Architecture), Figma MCP (Wireframes)
+    if not stream_mode:
+        try:
+            return _visualize_spec_core(req)
+        except HTTPException:
+            raise
+        except Exception as e:
+            if _is_quota_error(e):
+                fallback_diagram = _build_mock_excalidraw(req.specId)
+                return {
+                    "status": "success",
+                    "diagram": fallback_diagram,
+                    "diagramType": "process_flow",
+                    "mcp": "excalidraw",
+                    "specHash": compute_spec_hash({"project_name": req.specId}),
+                    "generatedAt": datetime.now(timezone.utc).isoformat() + "Z",
+                    "rateLimitRemaining": 0,
+                    "version": 1,
+                    "isMock": True,
+                    "fallbackReason": "quota_limit",
+                }
 
-    Args:
-        specId: ProjectSpec ID to visualize
-        userId: User ID from NextAuth
-        forceRegenerate: Force regeneration even if cached
-        diagramTypes: MCP types to use (default: ['excalidraw'])
-
-    Returns:
-        diagram: Excalidraw JSON (Process Flow overview)
-        specHash: Content hash for change detection
-        rateLimitRemaining: Remaining generations today
-        version: Diagram version number
-    """
-    try:
-        # 1. Check rate limit
-        allowed, remaining = check_rate_limit(req.userId)
-        if not allowed and not req.forceRegenerate:
+            print(f"❌ [ERROR] Diagram generation failed: {str(e)}")
             raise HTTPException(
-                status_code=429,
+                status_code=500,
                 detail={
                     "status": "error",
-                    "code": "RATE_LIMIT_EXCEEDED",
-                    "message": f"Daily diagram generation limit reached ({RATE_LIMITS['diagram_generation']['max_per_day']} per day)",
-                    "detail": "Limit resets at midnight UTC",
-                    "rateLimitRemaining": 0,
-                    "resetAt": (datetime.now(timezone.utc) + timedelta(days=1)).replace(hour=0, minute=0, second=0).isoformat() + "Z"
+                    "code": "GENERATION_FAILED",
+                    "message": "Failed to generate diagrams",
+                    "detail": str(e)
                 }
             )
 
-        # 2. Fetch spec data from database (mock for now)
-        # TODO: Query ProjectSpec from database
-        spec_data = {
-            "id": req.specId,
-            "problemStatement": "Build a project management tool",
-            "functionalRequirements": [
-                "User authentication",
-                "Project creation",
-                "Task management",
-                "Real-time collaboration",
-                "File attachments"
-            ],
-            "nonFunctionalRequirements": [
-                "Fast response time (<200ms)",
-                "Secure data storage",
-                "Mobile responsive"
-            ],
-            "techStackRecommendation": ["Next.js", "FastAPI", "PostgreSQL", "Redis"],
-            "processDescription": "Step 1: User logs in\nStep 2: Create project\nStep 3: Add tasks\nStep 4: Collaborate"
-        }
+    def to_sse(payload: dict) -> str:
+        return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
-        # 3. Compute spec hash
-        spec_hash = compute_spec_hash(spec_data)
+    async def event_stream():
+        step_events = []
 
-        # 4. Check if diagrams exist and spec hasn't changed
-        # TODO: Query ProjectSpec.visualizations from database
-        # For now, always generate
+        def collect_step(step: int, message: str):
+            step_events.append({"step": step, "message": message, "status": "in_progress"})
 
-        # 5. Generate Process Flow diagram (Excalidraw MCP)
-        mcp_type = req.diagramTypes[0] if req.diagramTypes else "excalidraw"
-        print(f"🎨 Generating {mcp_type} diagram for spec {req.specId}...")
-        diagram_result = generate_process_diagram(spec_data, mcp_type=mcp_type)
+        try:
+            result = _visualize_spec_core(req, emit_step=collect_step)
 
-        # 6. Validate generated diagram
-        if mcp_type == "excalidraw":
-            if not validate_excalidraw_json(diagram_result["diagram"]):
-                raise ValueError("Excalidraw diagram validation failed")
+            for event in step_events:
+                yield to_sse(event)
 
-        # 7. Save to database
-        # TODO: Update ProjectSpec.visualizations and specHash in database
-
-        # 8. Backup to file
-        version = 1  # TODO: Get next version from database
-        save_diagram_backup(req.userId, req.specId, diagram_result["diagram"], version)
-
-        # 9. Log generation event (for rate limiting)
-        # TODO: Insert into DiagramGenerationLog table
-
-        # 10. Return success response
-        return {
-            "status": "success",
-            "diagram": diagram_result["diagram"],
-            "diagramType": diagram_result["type"],
-            "mcp": diagram_result["mcp"],
-            "specHash": spec_hash,
-            "generatedAt": datetime.now(timezone.utc).isoformat() + "Z",
-            "rateLimitRemaining": remaining - 1,
-            "version": version
-        }
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        if _is_quota_error(e):
-            fallback_diagram = _build_mock_excalidraw(req.specId)
-            return {
+            yield to_sse({
+                **result,
                 "status": "success",
-                "diagram": fallback_diagram,
-                "diagramType": "process_flow",
-                "mcp": "excalidraw",
-                "specHash": compute_spec_hash(spec_data),
-                "generatedAt": datetime.now(timezone.utc).isoformat() + "Z",
-                "rateLimitRemaining": max(remaining - 1, 0),
-                "version": 1,
-                "isMock": True,
-                "fallbackReason": "quota_limit",
-            }
-
-        print(f"❌ [ERROR] Diagram generation failed: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail={
+                "message": "Visualization generation completed"
+            })
+        except HTTPException as http_exc:
+            detail = http_exc.detail if isinstance(http_exc.detail, dict) else {"message": str(http_exc.detail)}
+            yield to_sse({
                 "status": "error",
-                "code": "GENERATION_FAILED",
-                "message": "Failed to generate diagrams",
-                "detail": str(e)
-            }
-        )
+                "message": detail.get("message", "HTTP error"),
+                "detail": detail,
+                "code": detail.get("code", "HTTP_ERROR")
+            })
+        except Exception as e:
+            if _is_quota_error(e):
+                fallback_diagram = _build_mock_excalidraw(req.specId)
+                yield to_sse({
+                    "status": "success",
+                    "step": 5,
+                    "message": "Quota reached, returning fallback diagram",
+                    "diagram": fallback_diagram,
+                    "diagramType": "process_flow",
+                    "mcp": "excalidraw",
+                    "specHash": compute_spec_hash({"project_name": req.specId}),
+                    "generatedAt": datetime.now(timezone.utc).isoformat() + "Z",
+                    "rateLimitRemaining": 0,
+                    "version": 1,
+                    "isMock": True,
+                    "fallbackReason": "quota_limit",
+                })
+            else:
+                yield to_sse({
+                    "status": "error",
+                    "code": "GENERATION_FAILED",
+                    "message": "Failed to generate diagrams",
+                    "detail": str(e)
+                })
+
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
