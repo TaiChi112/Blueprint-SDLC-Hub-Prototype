@@ -1,0 +1,488 @@
+D:\RepositoryVS\Clone\gemini_mcp_excalidraw>python gemini_to_excalidraw.py --prompt "Draw a 3-tier web architecture" --session test
+[1/5] Sending to Gemini (gemini-2.5-flash)...
+
+── Raw Gemini output (first 500 chars) ─────
+[
+  {
+    "id": "presTier",
+    "type": "rectangle",
+    "x": 50,
+    "y": 80,
+    "width": 700,
+    "height": 260,
+    "label": {
+      "text": ""
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#e8f4f8",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 40,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "presText",
+    "type": "text",
+    "x": 70,
+    "y": 90,
+    "width": 160,
+    "height": 25,
+    "text":
+────────────────────────────────────────────
+
+      ✔ Parsed 20 raw elements from Gemini
+[2/5] Connecting to @scofieldfree/excalidraw-mcp...
+      Initializing MCP session...
+      ✓ Session initialized
+      Available tools: ['start_session', 'list_sessions', 'create_diagram', 'delete_diagram', 'add_elements', 'create_from_mermaid', 'add_template_architecture', 'update_element', 'delete_element', 'get_scene', 'export_diagram']
+
+[3/5] start_session...
+
+  ┌─ start_session ───────────────────────────────────
+  │  [0] type=text
+  │      ✅ Session started!
+
+Browser opened at: http://localhost:3100?sessionId=test
+Session ID: test
+
+Active Sessions:
+  - test (0 elements)
+
+You can now use the following tools (remember to pass sessionId):
+• add_elements - Add elements
+• create_from_mermaid - Build diagram from Mermaid
+• update_element - Update elements
+• delete_element - Delete elements
+• get_scene - Get current scene
+• export_diagram - Export diagram
+  │  isError=False
+  └────────────────────────────────────────────
+
+      Waiting 4s for browser + WebSocket...
+[4/5] add_elements (20 elements)...
+
+  ┌─ add_elements ───────────────────────────────────
+  │  [0] type=text
+  │      ✅ Successfully added 20 elements to session "test"!
+
+Element IDs: presTier, presText, appTier, appText, dataTier, dataText, client, lb, ws1, ws2, app1, app2, db, ar1, ar2, ar3, ar4, ar5, ar6, ar7
+Batch ID: 88f0e8cc-79f8-4aa8-bc28-7d39ce1f5be7
+  │  isError=False
+  └────────────────────────────────────────────
+
+[5/5] get_scene...
+
+  ┌─ get_scene ───────────────────────────────────
+  │  [0] type=text
+  │      📊 Current Scene Information
+═══════════════════
+
+Session ID: test
+Version: 62
+Last Updated: 2026-03-03T20:08:53.610Z
+Active Elements: 26
+Total Elements: 26
+
+Element Types:
+  • rectangle: 8
+  • text: 10
+  • ellipse: 1
+  • arrow: 7
+
+Canvas Background: #ffffff
+
+Active Elements List:
+  • [presTier] rectangle @ (50, 80)
+  • [presText] text @ (70, 90)
+  • [appTier] rectangle @ (50, 380)
+  • [appText] text @ (70, 390)
+  • [dataTier] rectangle @ (50, 600)
+  • [dataText] text @ (70, 610)
+  • [client] text @ (370, 40)
+  • [lb] rectangle @ (320, 140)
+  • [ws1] rectangle @ (140, 250)
+  • [ws2] rectangle @
+  │  isError=False
+  └────────────────────────────────────────────
+
+[6/5] export_diagram...
+
+── Excalidraw scene (text) ─────────────────
+[
+  {
+    "id": "presTier",
+    "type": "rectangle",
+    "x": 50,
+    "y": 80,
+    "width": 700,
+    "height": 260,
+    "label": {
+      "text": ""
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#e8f4f8",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 40,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "presText",
+    "type": "text",
+    "x": 70,
+    "y": 90,
+    "width": 160,
+    "height": 25,
+    "text": "Presentation Tier",
+    "fontSize": 16,
+    "strokeColor": "#333333",
+    "backgroundColor": "transparent",
+    "opacity": 100
+  },
+  {
+    "id": "appTier",
+    "type": "rectangle",
+    "x": 50,
+    "y": 380,
+    "width": 700,
+    "height": 180,
+    "label": {
+      "text": ""
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#e8f4f8",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 40,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "appText",
+    "type": "text",
+    "x": 70,
+    "y": 390,
+    "width": 160,
+    "height": 25,
+    "text": "Application Tier",
+    "fontSize": 16,
+    "strokeColor": "#333333",
+    "backgroundColor": "transparent",
+    "opacity": 100
+  },
+  {
+    "id": "dataTier",
+    "type": "rectangle",
+    "x": 50,
+    "y": 600,
+    "width": 700,
+    "height": 140,
+    "label": {
+      "text": ""
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#e8f4f8",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 40,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "dataText",
+    "type": "text",
+    "x": 70,
+    "y": 610,
+    "width": 160,
+    "height": 25,
+    "text": "Data Tier",
+    "fontSize": 16,
+    "strokeColor": "#333333",
+    "backgroundColor": "transparent",
+    "opacity": 100
+  },
+  {
+    "id": "client",
+    "type": "text",
+    "x": 370,
+    "y": 40,
+    "width": 60,
+    "height": 25,
+    "text": "Client",
+    "fontSize": 16,
+    "strokeColor": "#333333",
+    "backgroundColor": "transparent",
+    "opacity": 100
+  },
+  {
+    "id": "lb",
+    "type": "rectangle",
+    "x": 320,
+    "y": 140,
+    "width": 160,
+    "height": 60,
+    "label": {
+      "text": "Load Balancer"
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#dbe9f9",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 100,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "ws1",
+    "type": "rectangle",
+    "x": 140,
+    "y": 250,
+    "width": 160,
+    "height": 60,
+    "label": {
+      "text": "Web Server 1"
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#dbe9f9",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 100,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "ws2",
+    "type": "rectangle",
+    "x": 500,
+    "y": 250,
+    "width": 160,
+    "height": 60,
+    "label": {
+      "text": "Web Server 2"
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#dbe9f9",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 100,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "app1",
+    "type": "rectangle",
+    "x": 140,
+    "y": 440,
+    "width": 160,
+    "height": 60,
+    "label": {
+      "text": "App Server 1"
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#dbe9f9",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 100,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "app2",
+    "type": "rectangle",
+    "x": 500,
+    "y": 440,
+    "width": 160,
+    "height": 60,
+    "label": {
+      "text": "App Server 2"
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#dbe9f9",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 100,
+    "roundness": {
+      "type": 3
+    }
+  },
+  {
+    "id": "db",
+    "type": "ellipse",
+    "x": 320,
+    "y": 660,
+    "width": 160,
+    "height": 60,
+    "label": {
+      "text": "Database"
+    },
+    "strokeColor": "#333333",
+    "backgroundColor": "#dbe9f9",
+    "fillStyle": "solid",
+    "strokeWidth": 2,
+    "strokeStyle": "solid",
+    "roughness": 1,
+    "opacity": 100
+  },
+  {
+    "id": "ar1",
+    "type": "arrow",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "strokeColor": "#333333",
+    "startBinding": {
+      "elementId": "client",
+      "focus": 0.5,
+      "gap": 1
+    },
+    "endBinding": {
+      "elementId": "lb",
+      "focus": 0.5,
+      "gap": 1
+    }
+  },
+  {
+    "id": "ar2",
+    "type": "arrow",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "strokeColor": "#333333",
+    "startBinding": {
+      "elementId": "lb",
+      "focus": 0.5,
+      "gap": 1
+    },
+    "endBinding": {
+      "elementId": "ws1",
+      "focus": 0.5,
+      "gap": 1
+    }
+  },
+  {
+    "id": "ar3",
+    "type": "arrow",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "strokeColor": "#333333",
+    "startBinding": {
+      "elementId": "lb",
+      "focus": 0.5,
+      "gap": 1
+    },
+    "endBinding": {
+      "elementId": "ws2",
+      "focus": 0.5,
+      "gap": 1
+    }
+  },
+  {
+    "id": "ar4",
+    "type": "arrow",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "strokeColor": "#333333",
+    "startBinding": {
+      "elementId": "ws1",
+      "focus": 0.5,
+      "gap": 1
+    },
+    "endBinding": {
+      "elementId": "app1",
+      "focus": 0.5,
+      "gap": 1
+    }
+  },
+  {
+    "id": "ar5",
+    "type": "arrow",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "strokeColor": "#333333",
+    "startBinding": {
+      "elementId": "ws2",
+      "focus": 0.5,
+      "gap": 1
+    },
+    "endBinding": {
+      "elementId": "app2",
+      "focus": 0.5,
+      "gap": 1
+    }
+  },
+  {
+    "id": "ar6",
+    "type": "arrow",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "strokeColor": "#333333",
+    "startBinding": {
+      "elementId": "app1",
+      "focus": 0.5,
+      "gap": 1
+    },
+    "endBinding": {
+      "elementId": "db",
+      "focus": 0.5,
+      "gap": 1
+    }
+  },
+  {
+    "id": "ar7",
+    "type": "arrow",
+    "x": 0,
+    "y": 0,
+    "width": 0,
+    "height": 0,
+    "strokeColor": "#333333",
+    "startBinding": {
+      "elementId": "app2",
+      "focus": 0.5,
+      "gap": 1
+    },
+    "endBinding": {
+      "elementId": "db",
+      "focus": 0.5,
+      "gap": 1
+    }
+  }
+]
+────────────────────────────────────────────

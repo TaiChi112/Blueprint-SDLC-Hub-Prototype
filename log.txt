@@ -1,0 +1,66 @@
+bun run dev
+$ next dev
+▲ Next.js 16.1.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.56.1:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 12.1s
+○ Compiling /excalidraw-test ...
+ GET /excalidraw-test 200 in 21.6s (compile: 21.1s, render: 491ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 13.0s (compile: 12.4s, render: 683ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 82ms (compile: 51ms, render: 32ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 184ms (compile: 33ms, render: 152ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 49ms (compile: 16ms, render: 33ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 123ms (compile: 48ms, render: 76ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 43ms (compile: 8ms, render: 35ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 104ms (compile: 26ms, render: 77ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 28ms (compile: 9ms, render: 19ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 110ms (compile: 34ms, render: 76ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 41ms (compile: 13ms, render: 29ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 135ms (compile: 41ms, render: 94ms)
+prisma:query SELECT "public"."sessions"."id", "public"."sessions"."sessionToken", "public"."sessions"."userId", "public"."sessions"."expires", "public"."sessions"."createdAt", "public"."sessions"."updatedAt" FROM "public"."sessions" WHERE ("public"."sessions"."sessionToken" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."users"."id", "public"."users"."name", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."image", "public"."users"."avatar", "public"."users"."role", "public"."users"."provider", "public"."users"."bio", "public"."users"."joinedDate", "public"."users"."createdAt", "public"."users"."updatedAt" FROM "public"."users" WHERE "public"."users"."id" = $1 OFFSET $2
+ GET /api/auth/session 200 in 47ms (compile: 7ms, render: 40ms)
+
+
+FO:     Will watch for changes in these directories: ['D:\\RepositoryVS\\special_project_v1\\backend']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [6112] using StatReload
+INFO:     Started server process [15448]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:58810 - "OPTIONS /api/visualize-spec HTTP/1.1" 200 OK
+🎨 Generating excalidraw diagram for spec spec_2026-03-04-01-54-26-851830.json...
+📝 Generating diagram from process description (text parser)...
+📊 Generated 9 raw elements
+🔧 Sanitizing elements (add missing fields)...
+✨ Fixing element issues (arrows→lines, sync points)...
+✅ Process flow diagram ready: 9 elements (sanitized & fixed)
+💾 Saving visualization to database for spec_2026-03-04-01-54-26-851830.json...
+✅ Visualization saved to database
+✅ Diagram backup saved: diagrams/test-user/spec_2026-03-04-01-54-26-851830.json/v1.json
+INFO:     127.0.0.1:58810 - "POST /api/visualize-spec HTTP/1.1" 200 OK
